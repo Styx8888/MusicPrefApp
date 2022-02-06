@@ -24,10 +24,6 @@ namespace MusicPrefApp.Application
         public TIn Answers { get; set; }
 
         public abstract Task<TIn> GetOptions<T>(TPar parameters);
-
-        public int Number { get; set; }
-
-        public string Description { get; set; } 
     }
 
     public abstract class Question<TIn>
@@ -35,9 +31,5 @@ namespace MusicPrefApp.Application
         public TIn Answers { get; set; }
 
         public abstract Task<TIn> GetOptionsAsync<T>();
-
-        public int Number { get; set; }
-
-        public string Description { get; set; }
     }
 }

@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssemblyScanner" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MusicPrefApp.Services\MusicPrefApp.Services.csproj" />
   </ItemGroup>
 
