@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MusicPrefApp.Application\MusicPrefApp.Application.csproj" />
     <ProjectReference Include="..\MusicPrefApp.Services\MusicPrefApp.Services.csproj" />
   </ItemGroup>
 
