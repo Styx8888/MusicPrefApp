@@ -1,0 +1,36 @@
+﻿@inherits ComponentBase
+@using MusicPrefApp.Services.SpotifyApi
+@using MusicPrefApp.Application.Questions
+
+<MudSelect T="string" Label="@GenreQuestion.Description" MultiSelection="true" ValueChanged="ChangedGenre">
+    @foreach (var option in Options)
+    {
+        <MudSelectItem T="string" Value="@option">@option</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+
+    [Parameter] public EventCallback<List<string>> OnGenreChanged { get; set; }
+
+    [Inject] public ISpotifyApi SpotifyApi { get; set; }
+
+    public GenreQuestion GenreQuestion { get; set; }
+
+    protected List<string> Options { get; set; } = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        GenreQuestion = new GenreQuestion(SpotifyApi);
+        Options = await GenreQuestion.GetOptionsAsync<List<string>>();
+    }
+
+    private void ChangedGenre(string values)
+    {
+        if (!string.IsNullOrEmpty(values))
+        {
+            var list = values.Replace(" ", "").Split(",").ToList();
+            OnGenreChanged.InvokeAsync(list);
+        }
+    }
+}

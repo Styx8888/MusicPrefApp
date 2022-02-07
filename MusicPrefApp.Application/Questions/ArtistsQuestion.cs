@@ -2,28 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MusicPrefApp.Application.Interfaces;
 using MusicPrefApp.Services.SpotifyApi;
 using MusicPrefApp.Services.SpotifyApi.Extensions;
 using MusicPrefApp.Services.SpotifyApi.Models;
 
 namespace MusicPrefApp.Application.Questions
 {
-    public class ArtistsQuestion : Question<List<Artist>, List<string>>, IQuestion
+    public class ArtistsQuestion : IQuestion<List<Artist>, List<string>>
     {
         private readonly ISpotifyApi _spotifyApi;
-        public int Number { get; set; }
         public string Description { get; set; }
-        public Type Type { get; set; }
+       // public Type Type { get; set; }
 
         public ArtistsQuestion(ISpotifyApi spotifyApi)
         {
             _spotifyApi = spotifyApi;
             Description = "Which Artist from the list do you like?";
-            Number = 3;
-            Type = typeof(List<Artist>);
+           // Type = typeof(List<Artist>);
         }
 
-        public override async Task<List<Artist>> GetOptions<T>(List<string> parameters)
+        public async Task<List<Artist>> GetOptions<T>(List<string> parameters)
         {
             var artists = new List<Artist>();
 

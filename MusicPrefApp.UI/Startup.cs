@@ -9,8 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using MudBlazor;
 using MudBlazor.Services;
+using MusicPrefApp.Services.SpotifyApi.Extensions;
 
 namespace MusicPrefApp.UI
 {
@@ -30,7 +32,10 @@ namespace MusicPrefApp.UI
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddMudServices();
-            services.AddSingleton<WeatherForecastService>();
+            
+            var cache = new MemoryCache(new MemoryCacheOptions());
+
+            services.AddSpotifyApiService(Configuration, cache);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,25 @@
+﻿@using MusicPrefApp.Application.Questions
+
+<MudTextField T="string" Label="@Question.Description" @onchange="ChangeName" Required="true" RequiredError="Name is required!"/>
+
+@code {
+
+    [Parameter] public EventCallback<string> OnNameChanged { get; set; }
+
+    public NameQuestion Question { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Question = new NameQuestion();
+    }
+
+    private void ChangeName(ChangeEventArgs args)
+    {
+        if (args.Value == null) return;
+        var name = args.Value.ToString();
+        if (!string.IsNullOrEmpty(args.Value.ToString()))
+        {
+            OnNameChanged.InvokeAsync(name);
+        }
+    }
+}

@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicPrefApp.Services", "Mu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicPrefApp.Tests", "MusicPrefApp.Tests\MusicPrefApp.Tests.csproj", "{404536DC-11A7-489F-B5A1-5C426A776B10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicPrefApp.Application", "MusicPrefApp.Application\MusicPrefApp.Application.csproj", "{718B50D6-E32C-4FB5-874F-A1C0B0DF93FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicPrefApp.Application", "MusicPrefApp.Application\MusicPrefApp.Application.csproj", "{718B50D6-E32C-4FB5-874F-A1C0B0DF93FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicPrefApp.UI", "MusicPrefApp.UI\MusicPrefApp.UI.csproj", "{E8422E59-6518-409C-BD44-12656AD33C38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicPrefApp.UI", "MusicPrefApp.UI\MusicPrefApp.UI.csproj", "{E8422E59-6518-409C-BD44-12656AD33C38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

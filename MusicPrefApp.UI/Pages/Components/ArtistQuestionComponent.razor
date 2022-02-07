@@ -1,0 +1,41 @@
+﻿@inherits ComponentBase
+@using MusicPrefApp.Services.SpotifyApi
+@using MusicPrefApp.Application.Questions
+@using MusicPrefApp.Services.SpotifyApi.Models
+
+<MudSelect T="List<Artist>" Label="@ArtistsQuestion.Description" MultiSelection="true" ValueChanged="ChangedArtists">
+    @foreach (var artist in Options)
+    {
+        <MudSelectItem T="Artist" Value="@artist">@artist.name : @artist.genres[0]</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+
+    [Parameter] public EventCallback<List<Artist>> OnArtistChanged { get; set; }
+
+    [Parameter] public List<string> Genres { get; set; }
+
+    [Inject] public ISpotifyApi SpotifyApi { get; set; }
+
+    public ArtistsQuestion ArtistsQuestion { get; set; }
+
+    protected List<Artist> Options { get; set; } = new List<Artist>();
+
+    protected override void OnInitialized()
+    {
+        ArtistsQuestion = new ArtistsQuestion(SpotifyApi);
+        //Options = await ArtistsQuestion.GetOptions<List<Artist>>(Genres)
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Options = await ArtistsQuestion.GetOptions<List<Artist>>(Genres);
+        Options = Options.OrderByDescending(x => x.popularity).ToList();
+    }
+
+    private void ChangedArtists(List<Artist> artists)
+    {
+        OnArtistChanged.InvokeAsync(artists);
+    }
+    }
