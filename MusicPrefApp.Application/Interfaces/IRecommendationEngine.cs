@@ -8,6 +8,6 @@ namespace MusicPrefApp.Application.Interfaces
     {
         Task<List<Track>> GetRecommendations(List<string> likedGenres, List<Artist> likedArtists, List<Track> likedTracks);
 
-        void ExportRecommendation();
+        string ExportRecommendation(List<Track> recommendations);
     }
 }

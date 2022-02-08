@@ -1,6 +1,8 @@
 ﻿@inherits ComponentBase
 @using MusicPrefApp.Services.SpotifyApi
 @using MusicPrefApp.Application.Questions
+@using MusicPrefApp.UI.Models
+@using MusicPrefApp.UI.State
 
 <MudSelect T="string" Label="@GenreQuestion.Description" MultiSelection="true" ValueChanged="ChangedGenre">
     @foreach (var option in Options)
@@ -10,8 +12,7 @@
 </MudSelect>
 
 @code {
-
-    [Parameter] public EventCallback<List<string>> OnGenreChanged { get; set; }
+    [Inject] public AppState AppState { get; set; }
 
     [Inject] public ISpotifyApi SpotifyApi { get; set; }
 
@@ -25,12 +26,12 @@
         Options = await GenreQuestion.GetOptionsAsync<List<string>>();
     }
 
-    private void ChangedGenre(string values)
+    private async Task ChangedGenre(string values)
     {
         if (!string.IsNullOrEmpty(values))
         {
             var list = values.Replace(" ", "").Split(",").ToList();
-            OnGenreChanged.InvokeAsync(list);
+            await AppState.SetGenres(list);
         }
     }
 }

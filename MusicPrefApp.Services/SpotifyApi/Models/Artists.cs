@@ -25,6 +25,11 @@ namespace MusicPrefApp.Services.SpotifyApi.Models
         public int popularity { get; set; }
         public string type { get; set; }
         public string uri { get; set; }
+
+        public override string ToString()
+        {
+            return name;
+        }
     }
 
     public class Artists

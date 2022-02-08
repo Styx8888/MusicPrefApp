@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MusicPrefApp.Application.Interfaces;
 using MusicPrefApp.Services.SpotifyApi;
 using MusicPrefApp.Services.SpotifyApi.Models;
+using ServiceStack;
 
 namespace MusicPrefApp.Application
 {
@@ -19,16 +19,17 @@ namespace MusicPrefApp.Application
 
         public async Task<List<Track>> GetRecommendations(List<string> likedGenres, List<Artist> likedArtists, List<Track> likedTracks)
         {
+            var artistsIds = likedArtists.Select(a => a.id).Aggregate((id1, id2) => id1 + "," + id2);
+            var genres = likedGenres.Aggregate((g1, g2) => g1 + "," + g2);
+            var trackIds = likedTracks.Select(t => t.id).Aggregate((id1, id2) => id1 + "," + id2);
+            var recommendation = await _spotifyApi.GetRecommendations(artistsIds, genres, trackIds);
 
-            // TODO: Make unit tests for engine and aggregating lists
-            var artistsIds = likedArtists.Aggregate(string.Empty, (current, artist) => current + "," + artist.id);
-
-            //var tracks = await _spotifyApi.GetRecommendations()
+            return recommendation.tracks.OrderByDescending(x => x.popularity).ToList();
         }
 
-        public void ExportRecommendation()
+        public string ExportRecommendation(List<Track> recommendations)
         {
-            throw new NotImplementedException();
+            return recommendations.ToCsv();
         }
     }
 }

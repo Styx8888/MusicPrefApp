@@ -55,8 +55,11 @@ namespace MusicPrefApp.Services.SpotifyApi.Models
         public int track_number { get; set; }
         public string type { get; set; }
         public string uri { get; set; }
-
         public LinkedFrom linked_from { get; set; }
+        public override string ToString()
+        {
+            return name;
+        }
     }
 
     public class Tracks

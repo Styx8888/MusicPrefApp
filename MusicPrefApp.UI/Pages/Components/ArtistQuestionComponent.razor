@@ -2,40 +2,51 @@
 @using MusicPrefApp.Services.SpotifyApi
 @using MusicPrefApp.Application.Questions
 @using MusicPrefApp.Services.SpotifyApi.Models
+@using MusicPrefApp.UI.State
+@using MusicPrefApp.Application.Helpers
 
-<MudSelect T="List<Artist>" Label="@ArtistsQuestion.Description" MultiSelection="true" ValueChanged="ChangedArtists">
-    @foreach (var artist in Options)
-    {
-        <MudSelectItem T="Artist" Value="@artist">@artist.name : @artist.genres[0]</MudSelectItem>
-    }
-</MudSelect>
+<MudSelect T="Artist" Label="@ArtistsQuestion.Description" Disabled="@(AppState.AnswersModel.SelectedGenres.Count==0)" MultiSelection="true" SelectedValuesChanged="SelectedValuesChanged"> 
+        @foreach (var artist in Options)
+            {
+        <MudSelectItem T="Artist" Value="@artist">@artist.name genre: @artist.genres[0]</MudSelectItem>
+            }
+    </MudSelect>
 
 @code {
-
-    [Parameter] public EventCallback<List<Artist>> OnArtistChanged { get; set; }
-
-    [Parameter] public List<string> Genres { get; set; }
+    [Inject] public AppState AppState { get; set; }
 
     [Inject] public ISpotifyApi SpotifyApi { get; set; }
 
     public ArtistsQuestion ArtistsQuestion { get; set; }
 
-    protected List<Artist> Options { get; set; } = new List<Artist>();
+    protected List<Artist> Options { get; set; } = new();
 
+    protected List<string> ActuallySelectedGenres = new();
+    
     protected override void OnInitialized()
     {
+        AppState.OnGenreChanged += () => InvokeAsync(StateHasChanged);
         ArtistsQuestion = new ArtistsQuestion(SpotifyApi);
-        //Options = await ArtistsQuestion.GetOptions<List<Artist>>(Genres)
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Options = await ArtistsQuestion.GetOptions<List<Artist>>(Genres);
-        Options = Options.OrderByDescending(x => x.popularity).ToList();
+        if (!ActuallySelectedGenres.SequenceEqual(AppState.AnswersModel.SelectedGenres))
+        {
+            Options = await ArtistsQuestion.GetOptions<List<Artist>>(AppState.AnswersModel.SelectedGenres);
+            Options = Options.OrderByDescending(x => x.popularity).DistinctBy(a => a.name).ToList();
+            ActuallySelectedGenres = AppState.AnswersModel.SelectedGenres;
+        }
+    }
+    
+    private void SelectedValuesChanged(IEnumerable<Artist> artists)
+    {
+        AppState.SetArtists(artists.ToList());
     }
 
-    private void ChangedArtists(List<Artist> artists)
+    public void Dispose()
     {
-        OnArtistChanged.InvokeAsync(artists);
+        AppState.OnGenreChanged -= StateHasChanged;
     }
-    }
+
+}

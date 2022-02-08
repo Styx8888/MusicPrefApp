@@ -1,10 +1,11 @@
 ﻿@using MusicPrefApp.Application.Questions
+@using MusicPrefApp.UI.State
 
-<MudTextField T="string" Label="@Question.Description" @onchange="ChangeName" Required="true" RequiredError="Name is required!"/>
+<MudTextField T="string" Label="@Question.Description" TextChanged="ChangeName"/>
+@*<ValidationMessage For="@(() => AppState.AnswersModel.Username)" />*@
 
 @code {
-
-    [Parameter] public EventCallback<string> OnNameChanged { get; set; }
+    [Inject] public AppState AppState { get; set; }
 
     public NameQuestion Question { get; set; }
 
@@ -13,13 +14,11 @@
         Question = new NameQuestion();
     }
 
-    private void ChangeName(ChangeEventArgs args)
+    private void ChangeName(string name)
     {
-        if (args.Value == null) return;
-        var name = args.Value.ToString();
-        if (!string.IsNullOrEmpty(args.Value.ToString()))
+        if (!string.IsNullOrEmpty(name))
         {
-            OnNameChanged.InvokeAsync(name);
+            AppState.SetName(name);
         }
     }
 }

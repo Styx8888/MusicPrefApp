@@ -1,0 +1,51 @@
+﻿@inherits ComponentBase
+@using MusicPrefApp.Services.SpotifyApi
+@using MusicPrefApp.Application.Questions
+@using MusicPrefApp.Services.SpotifyApi.Models
+@using MusicPrefApp.UI.State
+@using MusicPrefApp.Application.Helpers
+
+<MudSelect T="Track" Label="@TracksQuestion.Description" Disabled="@(AppState.AnswersModel.SelectedArtists.Count==0)" MultiSelection="true" SelectedValuesChanged="SelectedValuesChanged">
+    @foreach (var track in Options)
+    {
+        <MudSelectItem T="Track" Value="@track">@track.name : artist: @track.artists[0]</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Inject] public ISpotifyApi SpotifyApi { get; set; }
+
+    [Inject] public AppState AppState { get; set; }
+
+    public TracksQuestion TracksQuestion { get; set; }
+
+    protected List<Track> Options { get; set; } = new List<Track>();
+
+    protected List<Artist> ActuallySelectedArtists = new();
+
+    protected override void OnInitialized()
+    {
+        AppState.OnArtistsChanged += () => InvokeAsync(StateHasChanged);
+        TracksQuestion = new TracksQuestion(SpotifyApi);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!ActuallySelectedArtists.SequenceEqual(AppState.AnswersModel.SelectedArtists))
+        {
+            Options = await TracksQuestion.GetOptions<List<Artist>>(AppState.AnswersModel.SelectedArtists);
+            Options = Options.OrderByDescending(x => x.popularity).DistinctBy(a => a.name).ToList();
+            ActuallySelectedArtists = AppState.AnswersModel.SelectedArtists;
+        }
+    }
+
+    private void SelectedValuesChanged(IEnumerable<Track> tracks)
+    {
+        AppState.SetTracks(tracks.ToList());
+    }
+
+    public void Dispose()
+    {
+        AppState.OnArtistsChanged -= StateHasChanged;
+    }
+}

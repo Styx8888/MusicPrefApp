@@ -1,18 +1,16 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MusicPrefApp.UI.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
-using MudBlazor;
 using MudBlazor.Services;
+using MusicPrefApp.Application;
+using MusicPrefApp.Application.Interfaces;
 using MusicPrefApp.Services.SpotifyApi.Extensions;
+using MusicPrefApp.UI.Models;
+using MusicPrefApp.UI.State;
 
 namespace MusicPrefApp.UI
 {
@@ -36,6 +34,11 @@ namespace MusicPrefApp.UI
             var cache = new MemoryCache(new MemoryCacheOptions());
 
             services.AddSpotifyApiService(Configuration, cache);
+            services.AddSingleton<IRecommendationEngine, SpotifyRecommendationEngine>();
+            services.AddSingleton(typeof(AppState));
+            services.AddScoped<IValidator<AnswersModel>, AnswersModelValidator>();
+            ValidatorOptions.Global.LanguageManager.Enabled = false;
+            services.AddSingleton<IRecommendationResult<string>, SpotifyCsvRecommendationResult>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +59,11 @@ namespace MusicPrefApp.UI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action}");
+
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });

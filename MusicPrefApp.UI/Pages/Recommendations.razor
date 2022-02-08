@@ -1,0 +1,45 @@
+﻿@page "/recommendations"
+@using MusicPrefApp.Application.Interfaces
+@using MusicPrefApp.Services.SpotifyApi.Models
+@using MusicPrefApp.UI.State
+
+@*<MudContainer MaxWidth="MaxWidth.Medium">*@
+    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Hello @AppState.AnswersModel.Username !</MudText>
+    <MudText Align="Align.Center"><MudFab StartIcon="@Icons.Material.Filled.Save" text-align="center" Link="/api/download/recommendations" Target="_blank" /></MudText>
+    <br><br/>
+
+<MudTable Items="@RecommendationsList" Hover="true" Breakpoint="Breakpoint.Sm">
+        <HeaderContent>
+            <MudTh>Song Name</MudTh>
+            <MudTh>Album</MudTh>
+            <MudTh>Artists</MudTh>
+            <MudTh>Popularity</MudTh>
+            <MudTh>First Artist Uri</MudTh>
+            <MudTh>Song Uri</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Song Name">@context.name</MudTd>
+            <MudTd DataLabel="Album">@context.album.name</MudTd>
+            <MudTd DataLabel="Artists">@context.artists.Select(x => x.name).Aggregate((s1, s2) => s1 + ", " + s2);</MudTd>
+            <MudTd DataLabel="Popularity">@context.popularity</MudTd>
+            <MudTd DataLabel="First Artist Uri"><MudLink Href="@context.artists[0].external_urls.spotify" target="_blank" Typo="Typo.body2">@context.artists[0].external_urls.spotify</MudLink></MudTd>
+            <MudTd DataLabel="Song Uri"><MudLink Href="@context.external_urls.spotify" target="_blank" Typo="Typo.body2">@context.external_urls.spotify</MudLink></MudTd>
+        </RowTemplate>
+    </MudTable>
+@*</MudContainer>*@
+@code {
+
+    [Inject] IRecommendationEngine RecommendationEngine { get; set; }
+
+    [Inject] AppState AppState { get; set; }
+
+    [Inject] IRecommendationResult<string> Result { get; set; }
+
+    public List<Track> RecommendationsList { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        RecommendationsList = await RecommendationEngine.GetRecommendations(AppState.AnswersModel.SelectedGenres, AppState.AnswersModel.SelectedArtists, AppState.AnswersModel.SelectedTracks);
+        Result.Recommendations = RecommendationEngine.ExportRecommendation(RecommendationsList);
+    }
+}
