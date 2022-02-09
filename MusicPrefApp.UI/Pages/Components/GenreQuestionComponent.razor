@@ -4,7 +4,7 @@
 @using MusicPrefApp.UI.Models
 @using MusicPrefApp.UI.State
 
-<MudSelect T="string" Label="@GenreQuestion.Description" MultiSelection="true" ValueChanged="ChangedGenre">
+<MudSelect @ref="_select" T="string" Label="@GenreQuestion.Description" MultiSelection="true" ValueChanged="ChangedGenre">
     @foreach (var option in Options)
     {
         <MudSelectItem T="string" Value="@option">@option</MudSelectItem>
@@ -20,8 +20,11 @@
 
     protected List<string> Options { get; set; } = new List<string>();
 
+    private MudSelect<string> _select;
+
     protected override async Task OnInitializedAsync()
     {
+        AppState.OnClear += () => InvokeAsync(Clear);
         GenreQuestion = new GenreQuestion(SpotifyApi);
         Options = await GenreQuestion.GetOptionsAsync<List<string>>();
     }
@@ -33,5 +36,16 @@
             var list = values.Replace(" ", "").Split(",").ToList();
             await AppState.SetGenres(list);
         }
+    }
+
+    public void Dispose()
+    {
+        AppState.OnClear -= Clear;
+    }
+
+    private void Clear()
+    {
+        _select.Clear();
+        StateHasChanged();
     }
 }

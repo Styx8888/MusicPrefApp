@@ -22,9 +22,23 @@ namespace MusicPrefApp.UI.State
 
         public event Action OnTracksChanged;
 
+        public event Action OnClear;
+
         public void SetName(string name)
         {
             AnswersModel.Username = name;
+        }
+
+        public void ClearAll()
+        {
+            AnswersModel.Username = string.Empty;
+            AnswersModel.SelectedTracks.Clear();
+            //OnTracksChanged?.Invoke();
+            AnswersModel.SelectedArtists.Clear();
+            //OnArtistsChanged?.Invoke();
+            AnswersModel.SelectedGenres.Clear();
+            // OnGenreChanged?.Invoke();
+            OnClear?.Invoke();
         }
 
         public async Task SetGenres(List<string> genres)

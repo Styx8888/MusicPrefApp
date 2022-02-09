@@ -35,12 +35,8 @@
 
     private void Reset()
     {
-        // TODO: Fix it, checkbox stays clicked
+        AppState.ClearAll();
         form.Reset();
-        AppState.AnswersModel.Username = string.Empty;
-        AppState.AnswersModel.SelectedTracks.Clear();
-        AppState.AnswersModel.SelectedArtists.Clear();
-        AppState.AnswersModel.SelectedGenres.Clear();
         StateHasChanged();
     }
 

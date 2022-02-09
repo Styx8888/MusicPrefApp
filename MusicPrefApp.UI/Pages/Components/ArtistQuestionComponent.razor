@@ -5,7 +5,7 @@
 @using MusicPrefApp.UI.State
 @using MusicPrefApp.Application.Helpers
 
-<MudSelect T="Artist" Label="@ArtistsQuestion.Description" Disabled="@(AppState.AnswersModel.SelectedGenres.Count==0)" MultiSelection="true" SelectedValuesChanged="SelectedValuesChanged"> 
+<MudSelect T="Artist" @ref="_select" Label="@ArtistsQuestion.Description" Disabled="@(AppState.AnswersModel.SelectedGenres.Count==0)" MultiSelection="true" SelectedValuesChanged="SelectedValuesChanged"> 
         @foreach (var artist in Options)
             {
         <MudSelectItem T="Artist" Value="@artist">@artist.name genre: @artist.genres[0]</MudSelectItem>
@@ -22,10 +22,12 @@
     protected List<Artist> Options { get; set; } = new();
 
     protected List<string> ActuallySelectedGenres = new();
-    
+
     protected override void OnInitialized()
     {
         AppState.OnGenreChanged += () => InvokeAsync(StateHasChanged);
+        AppState.OnClear += () => InvokeAsync(Clear);
+
         ArtistsQuestion = new ArtistsQuestion(SpotifyApi);
     }
 
@@ -38,7 +40,7 @@
             ActuallySelectedGenres = AppState.AnswersModel.SelectedGenres;
         }
     }
-    
+
     private void SelectedValuesChanged(IEnumerable<Artist> artists)
     {
         AppState.SetArtists(artists.ToList());
@@ -47,6 +49,14 @@
     public void Dispose()
     {
         AppState.OnGenreChanged -= StateHasChanged;
+        AppState.OnClear -= Clear;
     }
 
+    private MudSelect<Artist> _select;
+
+    private void Clear()
+    {
+        _select.Clear();
+        StateHasChanged();
+    }
 }

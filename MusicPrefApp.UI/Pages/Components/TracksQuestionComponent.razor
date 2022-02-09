@@ -5,7 +5,7 @@
 @using MusicPrefApp.UI.State
 @using MusicPrefApp.Application.Helpers
 
-<MudSelect T="Track" Label="@TracksQuestion.Description" Disabled="@(AppState.AnswersModel.SelectedArtists.Count==0)" MultiSelection="true" SelectedValuesChanged="SelectedValuesChanged">
+<MudSelect T="Track" @ref="_select" Label="@TracksQuestion.Description" Disabled="@(AppState.AnswersModel.SelectedArtists.Count==0)" MultiSelection="true" SelectedValuesChanged="SelectedValuesChanged">
     @foreach (var track in Options)
     {
         <MudSelectItem T="Track" Value="@track">@track.name : artist: @track.artists[0]</MudSelectItem>
@@ -26,6 +26,7 @@
     protected override void OnInitialized()
     {
         AppState.OnArtistsChanged += () => InvokeAsync(StateHasChanged);
+        AppState.OnClear += () => InvokeAsync(Clear);
         TracksQuestion = new TracksQuestion(SpotifyApi);
     }
 
@@ -47,5 +48,14 @@
     public void Dispose()
     {
         AppState.OnArtistsChanged -= StateHasChanged;
+        AppState.OnClear -= Clear;
+    }
+
+    private MudSelect<Track> _select;
+
+    private void Clear()
+    {
+        _select.Clear();
+        StateHasChanged();
     }
 }
