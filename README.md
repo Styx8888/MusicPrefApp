@@ -1,6 +1,6 @@
 # MusicPrefApp
 ## Intro
-This application uses Blazor Server side, it is similar to MVC in many ways, and gives many interesting opportunities.
+This application uses Blazor Server side, .net Core, it is similar to MVC in many ways, and gives many interesting opportunities.
 Some information about differences can be found here:
 https://www.telerik.com/blogs/difference-between-blazor-vs-razor
 
@@ -15,8 +15,8 @@ https://www.telerik.com/blogs/difference-between-blazor-vs-razor
 - Visual Studio 2019 or Visual Studio Code (For code check)
 
 ## How To Run It
-- Fill the needed information in the appsettings.json (ClientId and ClientSecret)
-- execute dotnet run command in directory MusicPrefApp(Root)\MusicPrefApp.UI
+- Fill the needed information in the appsettings.json (ClientId and ClientSecret) in MusicPrefApp.UI directory
+- execute "dotnet run" command in directory MusicPrefApp(Root)\MusicPrefApp.UI via cmd.exe
 - Run it using visual studio code or visual studio 2019 with or without debugger
 
 ### Additional Information
