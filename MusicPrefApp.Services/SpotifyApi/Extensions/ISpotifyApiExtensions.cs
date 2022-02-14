@@ -5,14 +5,14 @@ namespace MusicPrefApp.Services.SpotifyApi.Extensions
 {
     public static class ISpotifyApiExtensions
     {
-        public static async Task<ArtistsRoot> GetArtistsBasedOnGenre(this ISpotifyApi api, string genre)
+        public static Task<ArtistsRoot> GetArtistsBasedOnGenre(this ISpotifyApi api, string genre)
         {
-            return await api.Search<ArtistsRoot>($"genre:{genre}", "artist");
+            return api.Search<ArtistsRoot>($"genre:{genre}", "artist");
         }
 
-        public static async Task<TracksRoot> GetTracksBasedOnArtist(this ISpotifyApi api, string artist)
+        public static Task<TracksRoot> GetTracksBasedOnArtist(this ISpotifyApi api, string artist)
         {
-            return await api.Search<TracksRoot>($"artist:{artist}", "track");
+            return api.Search<TracksRoot>($"artist:{artist}", "track");
         }
     }
 }

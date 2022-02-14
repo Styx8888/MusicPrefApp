@@ -23,7 +23,7 @@ namespace MusicPrefApp.Services.SpotifyApi.Extensions
             {
                 if (!cache.TryGetValue("Token", out TokenModel token))
                 {
-                    var authApi = ISpotifyAuthApiExtensions.GetSpotifyAuthApi(configuration);
+                    var authApi = SpotifyAuthApiCreator.GetSpotifyAuthApi(configuration);
                     token = await authApi.GetSpotifyToken(configuration);
 
                     var cacheEntryOptions = new MemoryCacheEntryOptions()

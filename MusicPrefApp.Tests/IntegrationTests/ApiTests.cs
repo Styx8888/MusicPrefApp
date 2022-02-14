@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MusicPrefApp.Services.SpotifyApi;
 using MusicPrefApp.Services.SpotifyApi.Extensions;
 using MusicPrefApp.Services.SpotifyApi.Models;
 
@@ -14,7 +15,7 @@ namespace MusicPrefApp.Tests.IntegrationTests
        [TestMethod]
         public async Task TestSpotifyAuthApiTokenIsRetrieviedCorrectly()
         {
-            var authApi = ISpotifyAuthApiExtensions.GetSpotifyAuthApi(_configuration);
+            var authApi = SpotifyAuthApiCreator.GetSpotifyAuthApi(_configuration);
             var token = await authApi.GetSpotifyToken(_configuration);
             Assert.IsTrue(!string.IsNullOrEmpty(token.access_token));
         }
